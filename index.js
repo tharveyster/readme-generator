@@ -5,47 +5,62 @@ const util = require('util');
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
-// TODO: Create an array of questions for user input
+// Array of questions for user input
 const promptUser = () => {
     return inquirer.prompt([
         {
             type: 'input',
             name: 'github',
             message: 'What is your GitHub username?',
+            validate: async (answer) => {
+                if (answer.length < 1) {
+                    return console.log("Your GitHub username is required.");
+                }
+                return true;
+            }
         },
         {
             type: 'input',
             name: 'email',
             message: 'What is your email address?',
+            validate: async (answer) => {
+                if (answer.length < 1) {
+                    return console.log("Your email address is required.");
+                }
+                return true;
+            }
         },
         {
             type: 'input',
             name: 'title',
             message: 'What is your project\'s name?',
+            validate: async (answer) => {
+                if (answer.length < 1) {
+                    return console.log("You must provide a title for your project.");
+                }
+                return true;
+            }
         },
         {
             type: 'input',
             name: 'description',
             message: 'Please write a short description of your project?',
+            validate: async (answer) => {
+                if (answer.length < 1) {
+                    return console.log("You must provide a description of your project.");
+                }
+                return true;
+            }
         },
         {
             type: 'list',
             name: 'license',
             message: 'What kind of license should your project have?',
             choices: ['None', 
-                'Apache License 2.0', 
-                'GNU General Public License v3.0', 
-                'MIT License', 
-                'BSD 2-Clause "Simplified" License', 
-                'BSD 3-Clause "New" or "Revised" License', 
-                'Boost Software License 1.0', 
-                'Creative Commons Zero v1.0 Universal', 
-                'Eclipse Public License 2.0', 
-                'GNU Affero General Public License v3.0', 
-                'GNU General Public License v2.0', 
-                'GNU Lesser General Public License v2.1', 
-                'Mozilla Public License 2.0', 
-                'The Unlicense'],
+                'Apache', 
+                'GNU', 
+                'MIT', 
+                'Mozilla'],
         },
         {
             type: 'input',
@@ -72,10 +87,11 @@ const promptUser = () => {
     ]);
 };
 
-// TODO: Create a function to write README file
-//function writeToFile(fileName, data) { }
+// Function to write README file
 const generateMD = (answers) =>
   `# ${answers.title}
+
+![badge](https://img.shields.io/badge/License-${answers.license}-brightgreen)
 
 ## Description
 ${answers.description}
@@ -109,13 +125,15 @@ ${answers.tests}
 \`\`\`
 
 ## Questions
-If you have questions about this repo, open an issue or contact me directly at ${answers.email}. You can find more of my work at [${answers.github}](https://github.com/${answers.github}).`;
+If you have questions about this repo, open an issue or contact me directly at ${answers.email}. You can find more of my work at [${answers.github}](https://github.com/${answers.github}).
 
-// TODO: Create a function to initialize app
-//function init() { }
+## License
+${answers.license}`;
+
+// Function to initialize app
 const init = () => {
     promptUser()
-      .then((answers) => writeFileAsync('README.md', generateMD(answers)))
+      .then((answers) => writeFileAsync('./utils/README.md', generateMD(answers)))
       .then(() => console.log('Successfully created README.md'))
       .catch((err) => console.error(err));
   };
