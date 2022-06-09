@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/tharveyster/readme-generator#readme",
   "dependencies": {
-    "inquirer": "^8.1.2"
+    "inquirer": "^8.2.4"
   }
 }
